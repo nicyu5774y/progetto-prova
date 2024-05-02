@@ -1,29 +1,24 @@
 
+
+// --------------------------------
+
 /** Invia richiesta nel database per leggere i suoi dati.
  * @param {(data: Array) => void} onready 
  */
-function OpenDb (onready) {
+function OpenDb (table) {
     
     let seconds = Math.floor(new Date() / 1000);
     let url = `data.json?${seconds}`;
 
     console.log(`Ho inviato richiesta "${url}" al DB.`);
 
-    $.getJSON(url, data => onready(data));
-}
 
+    /** Fai questo a richiesta completata. */
+    const onready = data => {
 
-/** Funzione main dello script. */
-function Begin () {
-    console.info("Avvio applicazione... :) ");
-
-    /**
-     * @param {Array} data 
-     */
-    const onReady = data => {
-        let datasorted = Array.from(data)       // copia lista.
+        let datasorted = [...data]       // copia lista.
             .sort((a, b) => b.id - a.id)        // ordina.
-            .map((item) => ({                   // crea oggetto per ciascun elemento.
+            .map(item => ({                     // crea oggetto per ciascun elemento.
                 first_name: item.first_name,
                 last_name: item.last_name,
                 gender: item.gender,
@@ -37,99 +32,45 @@ function Begin () {
             }))
         ;
 
-        // console.log(datasorted);
-
-        $('#sample_data').DataTable({
-            data: datasorted,
-            order: [],
-            columns: [
-                { data: 'first_name' },
-                { data: 'last_name' },
-                { data: 'gender' },
-                { data: 'age' },
-                { data: 'action' },
-            ]
-        });
+        UpdateTable(table, datasorted);
     }
 
-    // Apriamo il database !
-    OpenDb(onReady);
+
+    // Invia richiesta.
+    $.getJSON(url, data => onready(data));
 }
 
 
-// main inizia qui !
-document.addEventListener('DOMContentLoaded', () => Begin());
+/** Costruisce la tabella. */
+function CreateTable () {
 
-// ok...
-
-$(document).ready(function() {
-
-    // load_db();
-
-    // $('#add_data').click(function() {
-
-    //     $('#dynamic_modal_title').text('Add Data');
-
-    //     $('#sample_form')[0].reset();
-
-    //     $('#action').val('Add');
-
-    //     $('#action_button').text('Add');
-
-    //     $('.text-danger').text('');
-
-    //     $('#action_modal').modal('show');
-
-    // });
-   
-    $('#sample_form').on('submit', function(event) {
-
-        console.log('submit.');
-        event.preventDefault();
-
-        $.ajax({
-            url: "action.php",
-            method: "POST",
-            data: $('#sample_form').serialize(),
-            dataType: "JSON",
-            beforeSend: function() {
-                $('#action_button').attr('disabled', 'disabled');
-            },
-            success: function(data) {
-                $('#action_button').attr('disabled', false);
-                if (data.error) {
-                    if (data.error.first_name_error) {
-                        $('#first_name_error').text(data.error.first_name_error);
-                    }
-                    if (data.error.last_name_error) {
-                        $('#last_name_error').text(data.error.last_name_error);
-                    }
-                    if (data.error.age_error) {
-                        $('#age_error').text(data.error.age_error);
-                    }
-                } else {
-                    $('#message').html('<div class="alert alert-success">' + data.success + '</div>');
-
-                    $('#action_modal').modal('hide');
-
-                    $('#sample_data').DataTable().destroy();
-
-                    load_data();
-
-                    setTimeout(function() {
-                        $('#message').html('');
-                    }, 5000);
-                }
-            }
-        });
-
+    // Costruisce il tavolo.
+    let table = $('#sample_data').DataTable({
+        order: [],
+        columns: [
+            { data: 'first_name' },
+            { data: 'last_name' },
+            { data: 'gender' },
+            { data: 'age' },
+            { data: 'action' },
+        ]
     });
 
-    $(document).on('click', '.edit', function() {
 
-        console.log('edit.');
+    const btnAdd = () => {
+        $('#dynamic_modal_title').text('Add Data');
+        $('#sample_form')[0].reset();
+        $('#action').val('Add');
+        $('#action_button').text('Add');
+        $('.text-danger').text('');
+        $('#action_modal').modal('show');
+    }
+
+
+    const btnEdit = ev => {
+        ev.preventDefault();
+
         var id = $(this).data('id');
-        console.log(id);
         $('#dynamic_modal_title').text('Edit Data');
 
         $('#action').val('Edit');
@@ -154,39 +95,128 @@ $(document).ready(function() {
                 $('#gender').val(data.gender);
                 $('#age').val(data.age);
                 $('#id').val(data.id);
+
+                OpenDb(table);
             },
             error: function() {},
             always: function() {
                 alert('Ajax completed!')
             }
         });
+    }
 
-    });
 
-    $(document).on('click', '.delete', function() {
+    const btnDelete = ev => {
+        ev.preventDefault();
 
-        var id = $(this).data('id');
+        let confirmation = confirm("Vuoi cancellare questo campo?");
 
-        if (confirm("Are you sure you want to delete this data?")) {
-            $.ajax({
-                url: "action.php",
-                method: "POST",
-                data: {
-                    action: 'delete',
-                    id: id
-                },
-                dataType: "JSON",
-                success: function(data) {
-                    $('#message').html('<div class="alert alert-success">' + data.success + '</div>');
+        // Chiedi l'utente se vuole cancellare il campo!
+        if (!confirmation) {
+            return;
+        }
+        
+        let id = $(this).data('id');
+
+        $.ajax({
+            url: "action.php",
+            method: "POST",
+            data: { action: 'delete', id: id },
+            dataType: "JSON",
+            success: (data) => {
+                $('#message').html('<div class="alert alert-success">' + data.success + '</div>');
+                $('#sample_data').DataTable().destroy();
+
+                OpenDb(table);
+
+                setTimeout(function() {
+                    $('#message').html('');
+                }, 5000);
+            }
+        });
+    }
+
+
+    /** Invia cambiamenti da un 'add' o 'edit' */
+    const submitChange = ev => {
+
+        ev.preventDefault();
+        
+        $.ajax({
+            url: "action.php",
+            method: "POST",
+            data: $('#sample_form').serialize(),
+            dataType: "JSON",
+            beforeSend: function() {
+                $('#action_button').attr('disabled', 'disabled');
+            },
+            success: function(data) {
+                $('#action_button').attr('disabled', false);
+                if (data.error) {
+                    if (data.error.first_name_error) {
+                        $('#first_name_error').text(data.error.first_name_error);
+                    }
+                    if (data.error.last_name_error) {
+                        $('#last_name_error').text(data.error.last_name_error);
+                    }
+                    if (data.error.age_error) {
+                        $('#age_error').text(data.error.age_error);
+                    }
+                } else {
+                    $('#message').html(`<div class="alert alert-success">${data.success}</div>`);
+
+                    $('#action_modal').modal('hide');
+
                     $('#sample_data').DataTable().destroy();
-                    load_data();
+
+                    OpenDb(table);
+
                     setTimeout(function() {
                         $('#message').html('');
                     }, 5000);
                 }
-            });
-        }
+            }
+        });
+    }
 
-    });
 
-});
+    // Configura i pulsanti della modifica.
+    $('#add_data')      .on('click', btnAdd);
+    $('#sample_form')   .on('submit', submitChange);
+    $('.edit')          .on('click', btnEdit);
+    $('.delete')         .on('click', btnDelete);
+
+    return table;
+}
+
+
+/** Svuota e ripopola la tabella. */
+function UpdateTable (table, db) {
+
+    table.clear();
+    table.rows.add(db);
+    table.draw();
+}
+
+
+// --------------------------------
+
+/** Funzione main dello script. */
+function Begin () {
+    console.info("Avvio applicazione... :) ");
+
+    // Costruisce la tabella.
+    let table = CreateTable();
+
+    // Apriamo il database !
+    OpenDb(table);
+}
+
+
+// --------------------------------
+
+// main inizia qui !
+document.addEventListener('DOMContentLoaded', () => Begin());
+
+
+// --------------------------------
