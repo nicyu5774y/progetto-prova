@@ -183,8 +183,8 @@ function CreateTable () {
     // Configura i pulsanti della modifica.
     $('#add_data')      .on('click', btnAdd);
     $('#sample_form')   .on('submit', submitChange);
-    $('.edit')          .on('click', btnEdit);
-    $('.delete')         .on('click', btnDelete);
+    $(document)         .on('click', '.edit', btnEdit);
+    $(document)         .on('click', '.delete', btnDelete);
 
     return table;
 }
