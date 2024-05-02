@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+    <link href="index.css" rel="sylescheet">
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -21,21 +22,21 @@
     <script src="https://cdn.datatables.net/1.12.0/js/dataTables.bootstrap5.min.js"></script>
     <script src="./assets/js/myjs.js"></script>
 
-    <title>PHP CRUD Operations with JSON File</title>
+    <title>Worker Json Php API</title>
 </head>
 
 <body>
 
     <div class="container">
-        <h1 class="mt-4 mb-4 text-center text-warning">JSON CRUD operations in PHP | Delete or Remove Data from JSON File</h1>
+        <h1 id="h1_tit" class="mt-4 mb-4 text-center text-warning">JSON CRUD operations in PHP | Delete or Remove Data from JSON File</h1>
 
         <span id="message"></span>
         <div class="card">
             <div class="card-header">
                 <div class="row">
-                    <div class="col col-sm-9">Sample Data</div>
+                    <div class="col col-sm-9">Data</div>
                     <div class="col col-sm-3">
-                        <button type="button" id="add_data" class="btn btn-success btn-sm float-end">Add</button>
+                        <button type="button" id="add_data" class="btn btn-success btn-sm float-end">Add-Data</button>
                     </div>
                 </div>
             </div>
@@ -71,7 +72,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label class="form-label">First Name</label>
+                        <label class="form-label">Name</label>
                         <input type="text" name="first_name" id="first_name" class="form-control" />
                         <span id="first_name_error" class="text-danger"></span>
                     </div>
@@ -85,6 +86,8 @@
                         <select name="gender" id="gender" class="form-control">
                             <option value="Male">Male</option>
                             <option value="Female">Female</option>
+                            <option value="No Binary">No Binary</option>
+                            <option value="Not found">Not Found</option>
                         </select>
                     </div>
                     <div class="mb-3">
@@ -94,7 +97,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <input type="text" name="id" id="id" />
+                    <input type="hidden" name="id" id="id" />
                     <input type="hidden" name="action" id="action" value="Add" />
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-primary" id="action_button">Add</button>
