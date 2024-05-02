@@ -1,4 +1,4 @@
-abbiamo creato da 0 il nostro progetto, prendendo come spunto alcune cose realizzate dal professore sul github
+Abbiamo creato il nostro progetto, prendendo come spunto alcune cose realizzate dal professore sul github
 1° fase: ci siamo suddivisi i lavori in modo equo e da poter lavorare più velocemente, abbiamo avviato Laragon per far si che il progetto funzioni
 2° fase: abbiamo creato i file per iniziare il lavoro...
 
