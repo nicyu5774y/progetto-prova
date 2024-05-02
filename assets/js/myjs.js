@@ -25,10 +25,9 @@ function OpenDb (table) {
                 age: item.age,
                 action: (       // Costruzione elementi dei pulsanti per modificare item.
 `<button type="button" class="btn btn-warning btn-sm edit" data-id="${item.id}" >Edit</button>
-<button type="button" class="btn btn-danger btn-sm delete" data-id="${item.id}" >Delete</button>
-<br>
-<input type="text" value="${item.id}" disabled="" />`
-                )
+<button type="button" class="btn btn-danger btn-sm delete" data-id="${item.id}" >Delete</button>`
+                ),
+                id: `<input type="text" value="${item.id}" disabled="" />`
             }))
         ;
 
@@ -53,6 +52,7 @@ function CreateTable () {
             { data: 'gender' },
             { data: 'age' },
             { data: 'action' },
+            { data: 'id' },
         ]
     });
 
@@ -121,7 +121,7 @@ function CreateTable () {
             success: (data) => {
                 $('#message').html(`<div class="alert alert-success">${data.success}</div>`);
 
-                setTimeout(() => OpenDb(table), 500);
+                setTimeout(() => OpenDb(table), 1000);
             }
         });
     }
@@ -162,7 +162,7 @@ function CreateTable () {
 
                 $('#action_modal').modal('hide');
 
-                setTimeout(() => OpenDb(table), 500);
+                setTimeout(() => OpenDb(table), 1000);
             }
         });
     }
