@@ -84,10 +84,7 @@ function CreateTable () {
         $.ajax({
             url: "action.php",
             method: "POST",
-            data: {
-                id: id,
-                action: 'fetch_single'
-            },
+            data: { id: id, action: 'fetch_single' },
             dataType: "JSON",
             success: function(data) {
                 $('#first_name').val(data.first_name);
@@ -125,13 +122,11 @@ function CreateTable () {
             dataType: "JSON",
             success: (data) => {
                 $('#message').html('<div class="alert alert-success">' + data.success + '</div>');
-                $('#sample_data').DataTable().destroy();
-
-                OpenDb(table);
 
                 setTimeout(function() {
                     $('#message').html('');
-                }, 5000);
+                    OpenDb(table);
+                }, 500);
             }
         });
     }
@@ -169,12 +164,12 @@ function CreateTable () {
 
                     $('#sample_data').DataTable().destroy();
 
-                    OpenDb(table);
-
                     setTimeout(function() {
                         $('#message').html('');
                     }, 5000);
                 }
+
+                OpenDb(table);
             }
         });
     }
