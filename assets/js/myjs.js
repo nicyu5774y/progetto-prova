@@ -1,75 +1,87 @@
 
-/** Carica i dati dal database. */
-function load_db () {
+/** Invia richiesta nel database per leggere i suoi dati.
+ * @param {(data: Array) => void} onready 
+ */
+function OpenDb (onready) {
+    
+    let seconds = Math.floor(new Date() / 1000);
+    let url = `data.json?${seconds}`;
 
-    console.log("Caricamento database.");
+    console.log(`Ho inviato richiesta "${url}" al DB.`);
 
-    var seconds = new Date() / 1000;
+    $.getJSON(url, data => onready(data));
+}
 
-    $.getJSON("data.json?" + seconds + "", function(data) {
 
-        data.sort((a, b) => b.id - a.id);
+/** Funzione main dello script. */
+function Begin () {
+    console.info("Avvio applicazione... :) ");
 
-        var data_arr = [];
+    /**
+     * @param {Array} data 
+     */
+    const onReady = data => {
+        let datasorted = Array.from(data)       // copia lista.
+            .sort((a, b) => b.id - a.id)        // ordina.
+            .map((item) => ({                   // crea oggetto per ciascun elemento.
+                first_name: item.first_name,
+                last_name: item.last_name,
+                gender: item.gender,
+                age: item.age,
+                action: (       // Costruzione elementi dei pulsanti per modificare item.
+`<button type="button" class="btn btn-warning btn-sm edit" data-id="${item.id}" >Edit</button>
+<button type="button" class="btn btn-danger btn-sm delete" data-id="${item.id}" >Delete</button>
+<br>
+<input type="text" value="${item.id}" disabled="" />`
+                )
+            }))
+        ;
 
-        for (var count = 0; count < data.length; count++) {
-            var sub_array = {
-                'first_name': data[count].first_name,
-                'last_name': data[count].last_name,
-                'gender': data[count].gender,
-                'age': data[count].age,
-                'action': '<button type="button" class="btn btn-warning btn-sm edit" data-id="' + data[count].id +
-                    '">Edit</button>&nbsp;<button type="button" class="btn btn-danger btn-sm delete" data-id="' + data[count].id + '">Delete</button>'
-            };
-
-            data_arr.push(sub_array);
-        }
+        // console.log(datasorted);
 
         $('#sample_data').DataTable({
-            data: data_arr,
+            data: datasorted,
             order: [],
-            columns: [{
-                    data: "first_name"
-                },
-                {
-                    data: "last_name"
-                },
-                {
-                    data: "gender"
-                },
-                {
-                    data: "age"
-                },
-                {
-                    data: "action"
-                }
+            columns: [
+                { data: 'first_name' },
+                { data: 'last_name' },
+                { data: 'gender' },
+                { data: 'age' },
+                { data: 'action' },
             ]
         });
+    }
 
-    });
+    // Apriamo il database !
+    OpenDb(onReady);
 }
+
+
+// main inizia qui !
+document.addEventListener('DOMContentLoaded', () => Begin());
+
+// ok...
 
 $(document).ready(function() {
 
-    console.log('Caricamento db.');
-    load_data();
+    // load_db();
 
-    $('#add_data').click(function() {
+    // $('#add_data').click(function() {
 
-        $('#dynamic_modal_title').text('Add Data');
+    //     $('#dynamic_modal_title').text('Add Data');
 
-        $('#sample_form')[0].reset();
+    //     $('#sample_form')[0].reset();
 
-        $('#action').val('Add');
+    //     $('#action').val('Add');
 
-        $('#action_button').text('Add');
+    //     $('#action_button').text('Add');
 
-        $('.text-danger').text('');
+    //     $('.text-danger').text('');
 
-        $('#action_modal').modal('show');
+    //     $('#action_modal').modal('show');
 
-    });
-
+    // });
+   
     $('#sample_form').on('submit', function(event) {
 
         console.log('submit.');
