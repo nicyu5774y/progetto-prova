@@ -92,8 +92,6 @@ function CreateTable () {
                 $('#gender').val(data.gender);
                 $('#age').val(data.age);
                 $('#id').val(data.id);
-
-                OpenDb(table);
             },
             error: function() {},
             always: function() {
@@ -106,9 +104,9 @@ function CreateTable () {
     const btnDelete = ev => {
         ev.preventDefault();
 
+        // Chiedi l'utente se vuole cancellare il campo!
         let confirmation = confirm("Vuoi cancellare questo campo?");
 
-        // Chiedi l'utente se vuole cancellare il campo!
         if (!confirmation) {
             return;
         }
@@ -121,7 +119,7 @@ function CreateTable () {
             data: { action: 'delete', id: id },
             dataType: "JSON",
             success: (data) => {
-                $('#message').html('<div class="alert alert-success">' + data.success + '</div>');
+                $('#message').html(`<div class="alert alert-success">${data.success}</div>`);
 
                 setTimeout(() => OpenDb(table), 500);
             }
@@ -163,8 +161,6 @@ function CreateTable () {
                 $('#message').html(`<div class="alert alert-success">${data.success}</div>`);
 
                 $('#action_modal').modal('hide');
-
-                $('#sample_data').DataTable().destroy();
 
                 setTimeout(() => OpenDb(table), 500);
             }
