@@ -1,4 +1,7 @@
-Instagram-IL MITICO GIUSEPPE: https://www.instagram.com/Giuseborrelli/  instagram-:https://www.instagram.com/gianpymaggiulli/  Insta-admin-developer-group:https://www.instagram.com/nicckq2/
+Instagram-IL MITICO GIUSEPPE: https://www.instagram.com/Giuseborrelli/  
+instagram-:https://www.instagram.com/gianpymaggiulli/  
+Insta-admin-developer-group:https://www.instagram.com/nicckq2/
+<br>
 Abbiamo creato il nostro progetto, prendendo come spunto alcune cose realizzate dal professore sul github
 1° fase: ci siamo suddivisi i lavori in modo equo, per ottimizzarei tempi di lavoro... (Nick è stressato)
 01. Domanda: chiamata tramite json, php. per la richiesta e l'esecuzione dell'API...
