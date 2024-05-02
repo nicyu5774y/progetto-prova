@@ -1,56 +1,58 @@
+
+/** Carica i dati dal database. */
+function load_db () {
+
+    console.log("Caricamento database.");
+
+    var seconds = new Date() / 1000;
+
+    $.getJSON("data.json?" + seconds + "", function(data) {
+
+        data.sort((a, b) => b.id - a.id);
+
+        var data_arr = [];
+
+        for (var count = 0; count < data.length; count++) {
+            var sub_array = {
+                'first_name': data[count].first_name,
+                'last_name': data[count].last_name,
+                'gender': data[count].gender,
+                'age': data[count].age,
+                'action': '<button type="button" class="btn btn-warning btn-sm edit" data-id="' + data[count].id +
+                    '">Edit</button>&nbsp;<button type="button" class="btn btn-danger btn-sm delete" data-id="' + data[count].id + '">Delete</button>'
+            };
+
+            data_arr.push(sub_array);
+        }
+
+        $('#sample_data').DataTable({
+            data: data_arr,
+            order: [],
+            columns: [{
+                    data: "first_name"
+                },
+                {
+                    data: "last_name"
+                },
+                {
+                    data: "gender"
+                },
+                {
+                    data: "age"
+                },
+                {
+                    data: "action"
+                }
+            ]
+        });
+
+    });
+}
+
 $(document).ready(function() {
 
+    console.log('Caricamento db.');
     load_data();
-
-    function load_data() {
-        var seconds = new Date() / 1000;
-
-        $.getJSON("data.json?" + seconds + "", function(data) {
-
-            data.sort(function(a, b) {
-
-                return b.id - a.id;
-
-            });
-
-            var data_arr = [];
-
-            for (var count = 0; count < data.length; count++) {
-                var sub_array = {
-                    'first_name': data[count].first_name,
-                    'last_name': data[count].last_name,
-                    'gender': data[count].gender,
-                    'age': data[count].age,
-                    'action': '<button type="button" class="btn btn-warning btn-sm edit" data-id="' + data[count].id +
-                        '">Edit</button>&nbsp;<button type="button" class="btn btn-danger btn-sm delete" data-id="' + data[count].id + '">Delete</button>'
-                };
-
-                data_arr.push(sub_array);
-            }
-
-            $('#sample_data').DataTable({
-                data: data_arr,
-                order: [],
-                columns: [{
-                        data: "first_name"
-                    },
-                    {
-                        data: "last_name"
-                    },
-                    {
-                        data: "gender"
-                    },
-                    {
-                        data: "age"
-                    },
-                    {
-                        data: "action"
-                    }
-                ]
-            });
-
-        });
-    }
 
     $('#add_data').click(function() {
 
@@ -70,6 +72,7 @@ $(document).ready(function() {
 
     $('#sample_form').on('submit', function(event) {
 
+        console.log('submit.');
         event.preventDefault();
 
         $.ajax({
@@ -112,6 +115,7 @@ $(document).ready(function() {
 
     $(document).on('click', '.edit', function() {
 
+        console.log('edit.');
         var id = $(this).data('id');
         console.log(id);
         $('#dynamic_modal_title').text('Edit Data');

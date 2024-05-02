@@ -2,114 +2,111 @@
 
 //action.php
 
-if(isset($_POST["action"]))
+assert(isset($_POST["action"]));
+
+$file = 'data.json';
+
+if($_POST['action'] == 'Add' ||$_POST['action'] == 'Edit')
 {
-	$file = 'data.json';
+	$error = array();
 
-	if($_POST['action'] == 'Add' ||$_POST['action'] == 'Edit')
+	$data = array();
+
+	$data['id'] = time();
+
+	if(empty($_POST['first_name']))
 	{
-		$error = array();
+		$error['first_name_error'] = 'First Name is Required';
+	}
+	else
+	{
+		$data['first_name'] = trim($_POST['first_name']);
+	}
 
-		$data = array();
+	if(empty($_POST['last_name']))
+	{
+		$error['last_name_error'] = 'Last Name is Required';
+	}
+	else
+	{
+		$data['last_name'] = trim($_POST['last_name']);
+	}
 
-		$data['id'] = time();
+	$data['gender'] = trim($_POST['gender']);
 
-		if(empty($_POST['first_name']))
-		{
-			$error['first_name_error'] = 'First Name is Required';
-		}
-		else
-		{
-			$data['first_name'] = trim($_POST['first_name']);
-		}
+	if(empty($_POST['age']))
+	{
+		$error['age_error'] = 'Age is required';
+	}
+	else
+	{
+		$data['age'] = trim($_POST['age']);
+	}
 
-		if(empty($_POST['last_name']))
-		{
-			$error['last_name_error'] = 'Last Name is Required';
-		}
-		else
-		{
-			$data['last_name'] = trim($_POST['last_name']);
-		}
+	if(count($error) > 0)
+	{
+		$output = array(
+			'error'		=>	$error
+		);
+	}
+	else
+	{
+		$file_data = json_decode(file_get_contents($file), true);
 
-		$data['gender'] = trim($_POST['gender']);
+		if($_POST['action'] == 'Add')
+		{
 
-		if(empty($_POST['age']))
-		{
-			$error['age_error'] = 'Age is required';
-		}
-		else
-		{
-			$data['age'] = trim($_POST['age']);
-		}
+			$file_data[] = $data;
 
-		if(count($error) > 0)
-		{
+			file_put_contents($file, json_encode($file_data));
+
 			$output = array(
-				'error'		=>	$error
+				'success' => 'Data Added'
 			);
 		}
-		else
+
+		if($_POST['action'] == 'Edit')
 		{
-			$file_data = json_decode(file_get_contents($file), true);
+			$key = array_search($_POST['id'], array_column($file_data, 'id'));
 
-			if($_POST['action'] == 'Add')
-			{
+			$file_data[$key]['first_name'] = $data['first_name'];
 
-				$file_data[] = $data;
+			$file_data[$key]['last_name'] = $data['last_name'];
 
-				file_put_contents($file, json_encode($file_data));
+			$file_data[$key]['age'] = $data['age'];
 
-				$output = array(
-					'success' => 'Data Added'
-				);
-			}
+			$file_data[$key]['gender'] = $data['gender'];
 
-			if($_POST['action'] == 'Edit')
-			{
-				$key = array_search($_POST['id'], array_column($file_data, 'id'));
+			file_put_contents($file, json_encode($file_data));
 
-				$file_data[$key]['first_name'] = $data['first_name'];
-
-				$file_data[$key]['last_name'] = $data['last_name'];
-
-				$file_data[$key]['age'] = $data['age'];
-
-				$file_data[$key]['gender'] = $data['gender'];
-
-				file_put_contents($file, json_encode($file_data));
-
-				$output = array(
-					'success' => 'Data Edited'
-				);
-			}
+			$output = array(
+				'success' => 'Data Edited'
+			);
 		}
-
-		echo json_encode($output);
 	}
 
-	if($_POST['action'] == 'fetch_single')
-	{
-		$file_data = json_decode(file_get_contents($file), true);
-
-		$key = array_search($_POST["id"], array_column($file_data, 'id'));
-
-		echo json_encode($file_data[$key]);
-	}
-
-	if($_POST['action'] == 'delete')
-	{
-		$file_data = json_decode(file_get_contents($file), true);
-
-		$key = array_search($_POST['id'], array_column($file_data, 'id'));
-
-		unset($file_data[$key]);
-
-		file_put_contents($file, json_encode($file_data));
-
-		echo json_encode(['success' => 'Data Deleted']);
-
-	}
+	echo json_encode($output);
 }
 
-?>
+if($_POST['action'] == 'fetch_single')
+{
+	$file_data = json_decode(file_get_contents($file), true);
+
+	$key = array_search($_POST["id"], array_column($file_data, 'id'));
+
+	echo json_encode($file_data[$key]);
+}
+
+if($_POST['action'] == 'delete')
+{
+	$file_data = json_decode(file_get_contents($file), true);
+
+	$key = array_search($_POST['id'], array_column($file_data, 'id'));
+
+	unset($file_data[$key]);
+
+	file_put_contents($file, json_encode($file_data));
+
+	echo json_encode(['success' => 'Data Deleted']);
+
+}
