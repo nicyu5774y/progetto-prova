@@ -123,10 +123,7 @@ function CreateTable () {
             success: (data) => {
                 $('#message').html('<div class="alert alert-success">' + data.success + '</div>');
 
-                setTimeout(function() {
-                    $('#message').html('');
-                    OpenDb(table);
-                }, 500);
+                setTimeout(() => OpenDb(table), 500);
             }
         });
     }
@@ -147,6 +144,8 @@ function CreateTable () {
             },
             success: function(data) {
                 $('#action_button').attr('disabled', false);
+
+                // Errore!
                 if (data.error) {
                     if (data.error.first_name_error) {
                         $('#first_name_error').text(data.error.first_name_error);
@@ -157,19 +156,17 @@ function CreateTable () {
                     if (data.error.age_error) {
                         $('#age_error').text(data.error.age_error);
                     }
-                } else {
-                    $('#message').html(`<div class="alert alert-success">${data.success}</div>`);
 
-                    $('#action_modal').modal('hide');
-
-                    $('#sample_data').DataTable().destroy();
-
-                    setTimeout(function() {
-                        $('#message').html('');
-                    }, 5000);
+                    return;
                 }
 
-                OpenDb(table);
+                $('#message').html(`<div class="alert alert-success">${data.success}</div>`);
+
+                $('#action_modal').modal('hide');
+
+                $('#sample_data').DataTable().destroy();
+
+                setTimeout(() => OpenDb(table), 500);
             }
         });
     }
