@@ -13,7 +13,8 @@ Abbiamo creato il nostro progetto, prendendo come spunto alcune cose realizzate 
 11. Dibattito tra il gruppo e il professore sul compito svolto.
 12. Aggiunte diverse funzioni sul  nostro sito
 13. Aggiunto stile...
-14. Situazione di debug found one error:407
+14. Situazione di debug found one error: in delete data ![image](https://github.com/nicyu5774y/progetto-prova/assets/51706333/d46df11f-2942-445f-ba01-48584a94559e)
+
 15. Debug terminate con risoluzione problema, id in tabella risolto, implementazione ajax.
 16. Inizio stile CSS
 17. Fine CSS, lavoro terminato
