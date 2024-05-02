@@ -61,7 +61,7 @@ if($_POST['action'] == 'Add' ||$_POST['action'] == 'Edit')
 			file_put_contents($file, json_encode($file_data));
 
 			$output = array(
-				'success' => 'Data Added'
+				'success' => 'Data Added Success'
 			);
 		}
 
@@ -103,7 +103,8 @@ if($_POST['action'] == 'delete')
 
 	$key = array_search($_POST['id'], array_column($file_data, 'id'));
 
-	unset($file_data[$key]);
+	//unset($file_data[$key]);
+	array_splice($file_data($cars, $key, 1));
 
 	file_put_contents($file, json_encode($file_data));
 
